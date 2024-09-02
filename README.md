@@ -14,6 +14,7 @@ Business Trainer RPG is an engaging role-playing game where players step into th
 - Engaging quests and challenges
 - Fun minigames to test your skills
 - Character progression and skill development
+- Save and load game progress
 
 ## Setup Instructions
 

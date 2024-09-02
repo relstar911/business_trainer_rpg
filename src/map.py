@@ -53,7 +53,7 @@ class Map:
             width, height = info["size"]
             if loc_x <= x < loc_x + width and loc_y <= y < loc_y + height:
                 entry_x, entry_y = info["entry"]
-                return x == entry_x and y == entry_y
+                return abs(x - entry_x) < 0.5 and abs(y - entry_y) < 0.5
         return True
 
     def get_location(self, x, y):

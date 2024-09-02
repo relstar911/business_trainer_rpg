@@ -1,4 +1,5 @@
 import random
+import pygame
 from .character import Character
 from .utils import calculate_success_chance
 from .debug import debug_print
@@ -8,7 +9,28 @@ class Player(Character):
         super().__init__(name, x, y)
         self.inventory = []
         self.quests = []
+        self.target_x = x
+        self.target_y = y
+        self.move_speed = 0.1  # Adjust this value to change movement speed
         debug_print(f"Initializing Player: {name}")
+
+    def update(self, dt):
+        # Smooth movement towards target position
+        dx = self.target_x - self.x
+        dy = self.target_y - self.y
+        distance = (dx ** 2 + dy ** 2) ** 0.5
+        
+        if distance > 0.01:  # If not very close to target
+            move_distance = min(self.move_speed * dt, distance)
+            self.x += (dx / distance) * move_distance
+            self.y += (dy / distance) * move_distance
+        else:
+            self.x = self.target_x
+            self.y = self.target_y
+
+    def move(self, dx, dy):
+        self.target_x += dx
+        self.target_y += dy
 
     def work(self):
         if self.energy >= 10:

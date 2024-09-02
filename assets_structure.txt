@@ -1,0 +1,36 @@
+Auflistung der Ordnerpfade
+Volumeseriennummer : 388C-538C
+C:.
+|   .gitignore
+|   AI_INSTRUCTIONS.md
+|   assets_structure.txt
+|   dev_notes.md
+|   main.py
+|   README.md
+|   requirements.txt
+|   
++---assets
+|   +---fonts
+|   +---images
+|   \---sounds
++---data
+|       minigames.json
+|       npcs.json
+|       quests.json
+|       
++---src
+|       game.py
+|       minigame.py
+|       npc.py
+|       player.py
+|       quest.py
+|       ui.py
+|       utils.py
+|       world.py
+|       __init__.py
+|       
+\---tests
+        test_game.py
+        test_player.py
+        __init__.py
+        

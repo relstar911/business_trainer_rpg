@@ -131,11 +131,23 @@ When making changes to the Business Trainer RPG codebase, please follow this che
    - [ ] Stage all updated files
    - [ ] Commit with a descriptive message of the changes made
 
-By following this checklist, we can ensure that all relevant parts of the codebase are considered and updated when making changes. This helps maintain consistency and reduces the likelihood of bugs caused by outdated code in different files.
+## Debugging
 
-## Code Analysis and Maintenance
+The game uses a custom debugging system. To enable or disable debug output, modify the `DEBUG` variable in `src/debug.py`. You can also adjust the `LOG_LEVEL` to control the verbosity of the output.
 
-To ensure code quality and maintain a clear understanding of the project structure, consider the following practices:
+Debug levels:
+- DEBUG: Most verbose, shows all debug messages
+- INFO: Shows informational messages and above
+- WARNING: Shows warnings and errors
+- ERROR: Shows only error messages
 
-### Static Code Analysis
-Use tools like `pylint` or `flake8` to check for code quality and adherence to PEP 8 standards:
+To use debug printing in your code:
+
+```
+from .debug import logger
+
+logger.debug("This is a debug message")
+logger.info("This is an info message")
+logger.warning("This is a warning")
+logger.error("This is an error")
+```

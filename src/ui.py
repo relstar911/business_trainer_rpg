@@ -1,4 +1,5 @@
 import pygame
+from .debug import debug_print
 
 class Button:
     def __init__(self, x, y, width, height, text, color, text_color):
@@ -14,29 +15,15 @@ class Button:
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
 
-    def is_clicked(self, pos):
-        return self.rect.collidepoint(pos)
-
 class Dialog:
     def __init__(self, text, options):
+        debug_print(f"Creating dialog: {text}")
         self.text = text
         self.options = options
-        self.buttons = []
-        self.create_buttons()
-
-    def create_buttons(self):
-        button_width = 100
-        button_height = 40
-        spacing = 20
-        total_width = len(self.options) * button_width + (len(self.options) - 1) * spacing
-        start_x = (800 - total_width) // 2
-        y = 400
-
-        for i, option in enumerate(self.options):
-            x = start_x + i * (button_width + spacing)
-            self.buttons.append(Button(x, y, button_width, button_height, option, (200, 200, 200), (0, 0, 0)))
+        self.selected_option = 0
 
     def draw(self, screen):
+        debug_print("Drawing dialog")
         # Draw dialog background
         pygame.draw.rect(screen, (50, 50, 50), (100, 100, 600, 400))
         
@@ -46,28 +33,21 @@ class Dialog:
         text_rect = text_surface.get_rect(center=(400, 250))
         screen.blit(text_surface, text_rect)
 
-        # Draw buttons
-        for button in self.buttons:
-            button.draw(screen)
+        # Draw options
+        for i, option in enumerate(self.options):
+            color = (255, 255, 0) if i == self.selected_option else (200, 200, 200)
+            option_surface = font.render(option, True, color)
+            option_rect = option_surface.get_rect(center=(400, 350 + i * 40))
+            screen.blit(option_surface, option_rect)
 
-    def handle_input(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            for button in self.buttons:
-                if button.is_clicked(event.pos):
-                    return button.text
-        return None
+        # Draw instruction
+        instruction = font.render("Use arrow keys to select, SPACE to confirm", True, (200, 200, 200))
+        instruction_rect = instruction.get_rect(center=(400, 500))
+        screen.blit(instruction, instruction_rect)
 
-    def show(self, screen):
-        clock = pygame.time.Clock()
-        running = True
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return None
-                result = self.handle_input(event)
-                if result:
-                    return result
+    def move_selection(self, direction):
+        self.selected_option = (self.selected_option + direction) % len(self.options)
+        debug_print(f"Dialog selection moved to: {self.get_selected_option()}")
 
-            self.draw(screen)
-            pygame.display.flip()
-            clock.tick(60)
+    def get_selected_option(self):
+        return self.options[self.selected_option]

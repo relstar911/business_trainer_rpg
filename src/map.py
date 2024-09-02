@@ -4,6 +4,7 @@ class Map:
     def __init__(self, width, height):
         self.width = width
         self.height = height
+        self.cell_size = 20
         self.grid = [[0 for _ in range(width)] for _ in range(height)]
         self.locations = {
             "office": {"pos": (5, 5), "size": (4, 3), "entry": (7, 7)},
@@ -14,30 +15,34 @@ class Map:
 
     def generate_rects(self):
         rects = {}
-        cell_size = 20
         for name, info in self.locations.items():
             x, y = info["pos"]
             width, height = info["size"]
-            rects[name] = pygame.Rect(x * cell_size, y * cell_size, width * cell_size, height * cell_size)
+            rects[name] = pygame.Rect(x * self.cell_size, y * self.cell_size, 
+                                      width * self.cell_size, height * self.cell_size)
         return rects
 
     def draw(self, screen):
-        cell_size = 20
+        # Draw grid
         for y in range(self.height):
             for x in range(self.width):
-                rect = pygame.Rect(x * cell_size, y * cell_size, cell_size, cell_size)
+                rect = pygame.Rect(x * self.cell_size, y * self.cell_size, 
+                                   self.cell_size, self.cell_size)
                 pygame.draw.rect(screen, (100, 100, 100), rect, 1)
 
+        # Draw locations
         for name, rect in self.rects.items():
             pygame.draw.rect(screen, (100, 100, 100), rect)
-            font = pygame.font.Font(None, 32)
+            font = pygame.font.Font(None, 24)
             text = font.render(name.capitalize(), True, (255, 255, 255))
             text_rect = text.get_rect(center=rect.center)
             screen.blit(text, text_rect)
 
-        for name, info in self.locations.items():
+        # Draw entry points
+        for info in self.locations.values():
             entry_x, entry_y = info["entry"]
-            entry_rect = pygame.Rect(entry_x * cell_size, entry_y * cell_size, cell_size, cell_size)
+            entry_rect = pygame.Rect(entry_x * self.cell_size, entry_y * self.cell_size, 
+                                     self.cell_size, self.cell_size)
             pygame.draw.rect(screen, (0, 255, 0), entry_rect)
 
     def is_walkable(self, x, y):
@@ -59,7 +64,5 @@ class Map:
         return None
 
     def get_location_by_pos(self, pos):
-        for name, rect in self.rects.items():
-            if rect.collidepoint(pos):
-                return name
-        return None
+        x, y = pos[0] // self.cell_size, pos[1] // self.cell_size
+        return self.get_location(x, y)

@@ -1,42 +1,55 @@
-from .character import Character
 import random
 from .ui import Dialog
+from .debug import debug_print
 
-class NPC(Character):
-    def __init__(self, name, x, y, role):
-        super().__init__(name, x, y)
-        self.role = role
+class NPC:
+    def __init__(self, name, x, y, npc_type):
+        debug_print(f"Initializing NPC: {name}")
+        self.name = name
+        self.x = x
+        self.y = y
+        self.npc_type = npc_type
         self.dialog_options = self.generate_dialog_options()
 
     def generate_dialog_options(self):
-        if self.role == "mentor":
+        if self.npc_type == "mentor":
             return [
                 "Would you like some advice?",
                 "Let's improve your skills!",
                 "How about a quick lesson?"
             ]
-        elif self.role == "investor":
+        elif self.npc_type == "investor":
             return [
                 "Are you looking for an investment?",
                 "Show me your business plan.",
                 "Let's talk about your company's future."
             ]
+        return ["Hello!"]
 
     def interact(self, player, game):
-        dialog = Dialog(f"{self.name}: {random.choice(self.dialog_options)}", ["Yes", "No"])
-        choice = dialog.show(game.screen)
-        
+        dialog_text = f"{self.name} says: {random.choice(self.dialog_options)}"
+        debug_print(f"NPC interaction: {dialog_text}")
+        dialog = Dialog(dialog_text, ["Yes", "No"])
+        game.current_dialog = dialog
+
+    def process_interaction(self, player, game, choice):
+        debug_print(f"Processing interaction with {self.name}, choice: {choice}")
         if choice == "Yes":
-            if self.role == "mentor":
+            if self.npc_type == "mentor":
                 skill = random.choice(list(player.skills.keys()))
-                player.skills[skill] += 0.5
-                game.show_message(f"{self.name} mentored {player.name} and improved their {skill} skill")
-            elif self.role == "investor":
+                increase = 0.5
+                player.skills[skill] += increase
+                message = f"{self.name} mentored you and improved your {skill} skill by {increase}!"
+            elif self.npc_type == "investor":
                 if player.skills["business"] > 5:
                     investment = random.randint(1000, 5000)
                     player.money += investment
-                    game.show_message(f"{self.name} invested ${investment} in {player.name}'s business")
+                    message = f"{self.name} invested ${investment} in your business!"
                 else:
-                    game.show_message(f"{self.name} declined to invest in {player.name}'s business")
+                    message = f"{self.name} declined to invest in your business."
+            debug_print(message)
+            game.show_message(message)
         else:
-            game.show_message(f"{player.name} declined to interact with {self.name}")
+            message = f"You declined to interact with {self.name}."
+            debug_print(message)
+            game.show_message(message)

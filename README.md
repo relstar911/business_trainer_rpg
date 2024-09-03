@@ -9,31 +9,32 @@ Business Trainer RPG is an engaging role-playing game where players step into th
 ## Features
 
 - Immersive business world to explore
-- Dynamic NPC interactions with expanded conversations
-- Business management simulation
-- Engaging quests and challenges
-- Fun minigames to test your skills
-- Character progression and skill development
+- Dynamic NPC interactions with expanded conversation trees
+- Complex business management simulation
+- Engaging quests and challenges with integrated minigames
+- Character progression and skill development system
+- Dynamic economy system with market states and stock prices
+- Adaptive difficulty system
 - Save and load game progress
-- Toggle button to enhance player movement speed
 - Sprint functionality (Hold 'Y' to sprint)
-- Highly detailed map for precise movement
-- Smooth, physics-based movement system
-- NPCs with simple up-and-down movement and obstacle avoidance
+- Energy management system for player actions
+- Detailed map with various locations and obstacles
 
 ## Recent Changes
 
-- Improved NPC interactions with expanded conversation trees
-- Implemented Pokemon-style dialog system
-- Added minigames to quests for more engaging gameplay
-- Separated items from NPCs for better world layout
-- Improved interaction range for NPCs
+- Implemented a dynamic economy system with market states, inflation, and stock prices
+- Added an adaptive difficulty system that adjusts based on player performance
+- Enhanced the quest system with integrated minigames
+- Improved NPC interactions with more complex conversation trees
+- Implemented energy management for player movement and actions
+- Added sprint functionality for faster player movement
+- Enhanced save/load system to include more game state information
 
 ## Setup Instructions
 
 1. Clone the repository:
    ```
-   git clone https://github.com/relstar911/business_trainer_rpg.git
+   git clone https://github.com/yourusername/business_trainer_rpg.git
    ```
 2. Navigate to the project directory:
    ```
@@ -71,12 +72,17 @@ Business Trainer RPG is an engaging role-playing game where players step into th
 - `src/`: Source code directory
   - `game.py`: Main game loop and logic
   - `player.py`: Player character management
-  - `world.py`: Game world and environment
+  - `character.py`: Base character class
   - `npc.py`: Non-player character interactions
-  - `quest.py`: Quest system
+  - `map.py`: Game world and environment
+  - `quest.py`: Quest system and management
   - `minigame.py`: Minigame implementations
+  - `economy.py`: Economic system simulation
+  - `difficulty.py`: Adaptive difficulty management
+  - `conversation.py`: Conversation system for NPCs
   - `ui.py`: User interface elements
   - `utils.py`: Utility functions
+  - `debug.py`: Debugging utilities
 - `assets/`: Game assets (images, sounds, fonts)
 - `data/`: Game data (quests, NPCs, minigames)
 - `tests/`: Unit tests
@@ -101,59 +107,9 @@ For any questions or feedback, please open an issue on this repository or contac
 
 Happy gaming and business building!
 
-## Development Workflow
-
-When making changes to the Business Trainer RPG codebase, please follow this checklist to ensure all relevant files are updated:
-
-1. **Update Core Game Logic**
-   - [ ] src/game.py
-   - [ ] src/player.py
-   - [ ] src/character.py
-   - [ ] src/npc.py
-   - [ ] src/map.py
-
-2. **Update Game Systems**
-   - [ ] src/quest.py
-   - [ ] src/minigame.py
-   - [ ] src/utils.py
-
-3. **Update User Interface**
-   - [ ] src/ui.py
-
-4. **Update Data Files** (if applicable)
-   - [ ] data/quests.json
-   - [ ] data/npcs.json
-   - [ ] data/minigames.json
-
-5. **Update Main Entry Point**
-   - [ ] main.py
-
-6. **Update Tests** (if applicable)
-   - [ ] tests/test_game.py
-   - [ ] tests/test_player.py
-   - [ ] Any other relevant test files
-
-7. **Update Documentation**
-   - [ ] README.md
-   - [ ] Any other documentation files
-
-8. **Review and Test**
-   - [ ] Run the game to ensure all changes work as expected
-   - [ ] Run all tests to ensure nothing was broken
-
-9. **Commit Changes**
-   - [ ] Stage all updated files
-   - [ ] Commit with a descriptive message of the changes made
-
 ## Debugging
 
-The game uses a custom debugging system. To enable or disable debug output, modify the `DEBUG` variable in `src/debug.py`. You can also adjust the `LOG_LEVEL` to control the verbosity of the output.
-
-Debug levels:
-- DEBUG: Most verbose, shows all debug messages
-- INFO: Shows informational messages and above
-- WARNING: Shows warnings and errors
-- ERROR: Shows only error messages
+The game uses a custom debugging system. To enable or disable debug output, modify the `DEBUG` variable in `src/debug.py`. You can also adjust the logging level to control the verbosity of the output.
 
 To use debug printing in your code:
 

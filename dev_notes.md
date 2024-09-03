@@ -1,51 +1,31 @@
 # Development Notes
 
-## Project Overview
-Business Trainer RPG is a role-playing game that simulates the journey of an aspiring entrepreneur. The game combines elements of business management, character progression, and interactive storytelling.
+## Recent Updates
+- Implemented sprint functionality and energy management for the player
+- Enhanced the map system with improved walkability checks and location handling
+- Updated NPC system to work with the new map and conversation trees
+- Improved quest system with integrated minigames and difficulty scaling
+- Added a dynamic economy system with market states and stock prices
+- Implemented a difficulty manager that adapts to player performance
+- Created a tree-based conversation system for more engaging NPC interactions
+- Enhanced the main game loop to handle persistent game states
 
-## Core Game Mechanics
-1. **Character Progression**
-   - Skills: business, networking, marketing
-   - Energy system for daily activities
-   - Money management
-
-2. **World Exploration**
-   - Grid-based movement system
-   - Interactive locations (office, home, etc.)
-   - Item pickups (Money Bag, Energy Drink)
-
-3. **NPC Interactions**
-   - Mentor characters for skill improvement
-   - Investors for funding opportunities
-   - Dynamic dialog system
-
-4. **Quest System**
-   - Multiple active quests
-   - Reward system for completed quests
-
-5. **Minigames**
-   - Skill-based challenges
-   - Difficulty scaling based on player skills
-
-## Technical Implementation
-- **Game Engine**: Pygame
-- **Main Game Loop**: Handled in `src/game.py`
-- **Debugging System**: Custom logger in `src/debug.py`
-
-## Development Roadmap
-1. Implement core movement and interaction systems
-2. Develop NPC interaction and dialog system
-3. Create quest management system
-4. Design and implement minigames
-5. Balance game economy and progression
-6. Add more content (NPCs, quests, locations)
-7. Polish UI and add sound effects
-8. Extensive testing and bug fixing
+## Current Focus
+- Balancing the economy and difficulty systems
+- Expanding the variety of quests and minigames
+- Improving UI/UX for better player feedback and interaction
 
 ## Known Issues
-- [List any known bugs or issues here]
+- Occasional lag during economy updates in large game worlds
+- Some NPCs may get stuck in certain map locations
 
-## Ideas for Future Expansion
-- Multiplayer mode for competitive business simulations
-- More complex economic systems (stock market, real estate)
-- Branching storylines based on player decisions
+## Next Steps
+- Implement a save/load system for game progress
+- Add more diverse locations and business types
+- Create a tutorial system for new players
+- Optimize performance for larger game worlds
+
+## Testing Needs
+- Extensive playtesting to balance difficulty and economy
+- Edge case testing for the new conversation system
+- Performance testing with large numbers of NPCs and items

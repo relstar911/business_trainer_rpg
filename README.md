@@ -9,12 +9,25 @@ Business Trainer RPG is an engaging role-playing game where players step into th
 ## Features
 
 - Immersive business world to explore
-- Dynamic NPC interactions
+- Dynamic NPC interactions with expanded conversations
 - Business management simulation
 - Engaging quests and challenges
 - Fun minigames to test your skills
 - Character progression and skill development
 - Save and load game progress
+- Toggle button to enhance player movement speed
+- Sprint functionality (Hold 'Y' to sprint)
+- Highly detailed map for precise movement
+- Smooth, physics-based movement system
+- NPCs with simple up-and-down movement and obstacle avoidance
+
+## Recent Changes
+
+- Improved NPC interactions with expanded conversation trees
+- Implemented Pokemon-style dialog system
+- Added minigames to quests for more engaging gameplay
+- Separated items from NPCs for better world layout
+- Improved interaction range for NPCs
 
 ## Setup Instructions
 

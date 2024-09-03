@@ -1,41 +1,33 @@
-import time
+import logging
 
+# Initialize these at the module level
+DEBUG = True  # You might want to set this based on a configuration file or environment variable
+UPDATE_INTERVAL = 100  # Adjust as needed
+update_counter = 0
+
+# Set up logging
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+# Debug flag
 DEBUG = True
-LOG_LEVEL = "INFO"  # Can be "DEBUG", "INFO", "WARNING", or "ERROR"
 
-class DebugLogger:
-    def __init__(self):
-        self.last_time = time.time()
-        self.update_counts = {"QuestManager": 0, "MinigameManager": 0}
+# Counters for limiting debug output
+update_counter = 0
+UPDATE_INTERVAL = 60  # Only log every 60th update
 
-    def log(self, level, message):
-        if DEBUG and self.should_log(level):
-            current_time = time.time()
-            print(f"[{level}] [{current_time - self.last_time:.2f}s] {message}")
-            self.last_time = current_time
+def debug_print(message, force=False):
+    global update_counter
+    if DEBUG:
+        update_counter += 1  # Increment counter for every call
+        if force or update_counter % UPDATE_INTERVAL == 0:
+            logger.debug(message)
 
-    def should_log(self, level):
-        levels = ["DEBUG", "INFO", "WARNING", "ERROR"]
-        return levels.index(level) >= levels.index(LOG_LEVEL)
+def info_print(message):
+    logger.info(message)
 
-    def debug(self, message):
-        self.log("DEBUG", message)
+def warning_print(message):
+    logger.warning(message)
 
-    def info(self, message):
-        self.log("INFO", message)
-
-    def warning(self, message):
-        self.log("WARNING", message)
-
-    def error(self, message):
-        self.log("ERROR", message)
-
-    def update(self, manager_name):
-        self.update_counts[manager_name] += 1
-        if self.update_counts[manager_name] % 100 == 0:
-            self.debug(f"{manager_name} updated {self.update_counts[manager_name]} times")
-
-logger = DebugLogger()
-
-def debug_print(message):
-    logger.debug(message)
+def error_print(message):
+    logger.error(message)

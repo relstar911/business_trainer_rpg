@@ -9,12 +9,12 @@ class PauseMenu:
             Button(300, 200, 200, 50, "Resume", (100, 100, 100), (255, 255, 255)),
             Button(300, 275, 200, 50, "Save Game", (100, 100, 100), (255, 255, 255)),
             Button(300, 350, 200, 50, "Load Game", (100, 100, 100), (255, 255, 255)),
-            Button(300, 425, 200, 50, "Quit to Main Menu", (100, 100, 100), (255, 255, 255))
+            Button(300, 425, 200, 50, "Quit to Main Menu", (100, 100, 100), (255, 255, 255)),
+            Button(300, 500, 200, 50, "Quit Game", (100, 100, 100), (255, 255, 255))
         ]
         debug_print("Pause menu initialized")
 
     def run(self):
-        debug_print("Running pause menu")
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -26,22 +26,17 @@ class PauseMenu:
                     if event.button == 1:  # Left mouse button
                         for button in self.buttons:
                             if button.rect.collidepoint(event.pos):
-                                debug_print(f"Button clicked: {button.text}")
                                 return button.text.upper().replace(" ", "_")
 
-            self.render()
+            self.draw(self.screen)
             pygame.display.flip()
 
-    def render(self):
-        # Draw a semi-transparent overlay
-        overlay = pygame.Surface((800, 600), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 128))
-        self.screen.blit(overlay, (0, 0))
-
+    def draw(self, screen):
+        screen.fill((0, 0, 0, 128))  # Semi-transparent black background
         font = pygame.font.Font(None, 64)
         title = font.render("Paused", True, (255, 255, 255))
         title_rect = title.get_rect(center=(400, 100))
-        self.screen.blit(title, title_rect)
+        screen.blit(title, title_rect)
 
         for button in self.buttons:
-            button.draw(self.screen)
+            button.draw(screen)

@@ -1,124 +1,99 @@
 import random
-from .ui import Dialog
-from .debug import debug_print
-from .quest import Quest
-from .conversation import ConversationTree, create_mentor_conversation
+import pygame
 
-class NPC:
-    def __init__(self, name, x, y, npc_type):
-        debug_print(f"Initializing NPC: {name}")
-        self.name = name
-        self.x = x
-        self.y = y
+from src import game, player
+from src.character import Character
+from .ui import Dialog, ConversationWindow
+from .debug import debug_print, info_print
+from .conversation import create_mentor_conversation, create_investor_conversation, create_customer_conversation, create_competitor_conversation
+
+class NPC(Character):
+    def __init__(self, name, x, y, npc_type, game_map):
+        super().__init__(name, x, y)
         self.npc_type = npc_type
-        self.dialog_options = self.generate_dialog_options()
-        self.relationship = 50  # 0-100 scale
-        self.conversation_tree = create_mentor_conversation() if npc_type == "mentor" else None
+        self.game_map = game_map
+        self.rect = pygame.Rect(x, y, 20, 20)
+        self.movement_timer = 0
+        self.movement_interval = 2  # Move every 2 seconds
+        self.interaction_range = 30
+        self.conversation_tree = self.get_conversation_tree()
+        info_print(f"Initializing NPC: {name}")
 
-    def generate_dialog_options(self):
+    def update(self, dt):
+        super().update(dt)
+        self.movement_timer += dt
+        if self.movement_timer >= self.movement_interval:
+            self.move_randomly()
+            self.movement_timer = 0
+
+    def move_randomly(self):
+        dx = random.choice([-1, 0, 1])
+        dy = random.choice([-1, 0, 1])
+        new_x = self.x + dx
+        new_y = self.y + dy
+        if self.game_map.is_walkable(new_x, new_y):
+            self.x = new_x
+            self.y = new_y
+            self.rect.x = int(self.x)
+            self.rect.y = int(self.y)
+
+    def get_conversation_tree(self):
         if self.npc_type == "mentor":
-            return [
-                "Would you like some advice?",
-                "Let's improve your skills!",
-                "How about a quick lesson?"
-            ]
+            return create_mentor_conversation()
         elif self.npc_type == "investor":
-            return [
-                "Are you looking for an investment?",
-                "Show me your business plan.",
-                "Let's talk about your company's future."
-            ]
+            return create_investor_conversation()
         elif self.npc_type == "customer":
-            return [
-                "What products do you offer?",
-                "I'm looking for a good deal.",
-                "Can you help me with something?"
-            ]
+            return create_customer_conversation()
         elif self.npc_type == "competitor":
-            return [
-                "How's business going?",
-                "Maybe we could collaborate sometime.",
-                "Watch out, I'm planning something big!"
-            ]
-        return ["Hello!"]
+            return create_competitor_conversation()
+        else:
+            return None
 
     def interact(self, player, game):
-        dialog_text = f"{self.name} says: {random.choice(self.dialog_options)}"
-        debug_print(f"NPC interaction: {dialog_text}")
-        options = ["Talk", "Quest", "Trade", "Leave"]
-        dialog = Dialog(dialog_text, options)
-        game.current_dialog = dialog
-
-    def process_interaction(self, player, game, choice):
-        debug_print(f"Processing interaction with {self.name}, choice: {choice}")
-        if choice == "Talk":
-            self.talk(player, game)
-        elif choice == "Quest":
-            self.offer_quest(player, game)
-        elif choice == "Trade":
-            self.trade(player, game)
-        else:
-            game.show_message(f"You decided to leave {self.name}.")
-
-    def talk(self, player, game):
-        difficulty = game.difficulty_manager.calculate_difficulty()
-        if self.npc_type == "mentor":
+        if self.is_in_range(player):
             if self.conversation_tree:
-                self.conversation_tree.reset()
-                game.show_message(self.conversation_tree.get_current_text())
-                options = self.conversation_tree.get_options()
-                dialog = Dialog("", options)
-                game.current_dialog = dialog
+                game.current_dialog = ConversationWindow(self.conversation_tree, self.name)
             else:
-                skill = random.choice(list(player.skills.keys()))
-                increase = 0.5 / difficulty
-                player.skills[skill] += increase
-                message = f"{self.name} mentored you and improved your {skill} skill by {increase:.2f}!"
-                self.relationship += 5
-        elif self.npc_type == "investor":
-            if player.skills["business"] > 5 * difficulty:
-                investment = random.randint(1000, 5000) * difficulty
-                player.money += investment
-                message = f"{self.name} invested ${investment:.0f} in your business!"
-                self.relationship += 10
-            else:
-                message = f"{self.name} declined to invest in your business."
-                self.relationship -= 5
-        elif self.npc_type == "customer":
-            sale = random.randint(50, 200) * difficulty
-            player.money += sale
-            message = f"You made a sale of ${sale:.0f} to {self.name}!"
-            self.relationship += 3
-        elif self.npc_type == "competitor":
-            tip = random.choice(["marketing", "customer service", "product development"])
-            message = f"{self.name} gives you a tip about {tip}. Your knowledge improves slightly."
-            player.skills[random.choice(list(player.skills.keys()))] += 0.2 / difficulty
-            self.relationship += 2
+                dialog_text = f"{self.name} says: Hello, I'm a {self.npc_type}!"
+                options = ["Talk", "Quest", "Trade", "Leave"]
+                game.current_dialog = Dialog(dialog_text, options)
         else:
-            message = f"You had a pleasant conversation with {self.name}."
-            self.relationship += 1
+            debug_print(f"Player is too far from {self.name} to interact")
 
-        self.relationship = max(0, min(100, self.relationship))
-        debug_print(message)
-        game.show_message(message)
+    def is_in_range(self, player):
+        distance = ((self.rect.x - player.rect.x) ** 2 + (self.rect.y - player.rect.y) ** 2) ** 0.5
+        return distance <= self.interaction_range
 
-    def offer_quest(self, player, game):
-        quest = game.quest_manager.offer_quest(player)
-        if quest:
-            message = f"You accepted the quest: {quest.name}\n{quest.description}"
+    def offer_quest(self, player, game, npc_type):
+        if npc_type == "mentor":
+            return self.offer_mentor_quest(player, game)
+        elif npc_type == "investor":
+            return self.offer_investor_quest(player, game)
+        elif npc_type == "customer":
+            return self.offer_customer_quest(player, game)
+        elif npc_type == "competitor":
+            return self.offer_competitor_quest(player, game)
         else:
-            message = f"{self.name} doesn't have any quests for you right now."
-        game.show_message(message)
+            return f"{self.name} doesn't have any quests for you at the moment."
 
-    def trade(self, player, game):
-        if self.npc_type == "customer":
-            item = random.choice(player.inventory) if player.inventory else None
-            if item:
-                price = item.value * (1 + (self.relationship - 50) / 100)
-                message = f"{self.name} offers to buy your {item.name} for ${price:.2f}. Accept? (Y/N)"
-                game.show_message(message)
-                # Handle player's response in game.py
-            else:
-                game.show_message("You don't have any items to trade.")
-        else:
-            game.show_message(f"{self.name} is not interested in trading right now.")
+    def offer_mentor_quest(self, player, game):
+        # Implement mentor-specific quest logic here
+        return f"{self.name} offers you a mentorship quest."
+
+    def offer_investor_quest(self, player, game):
+        # Implement investor-specific quest logic here
+        return f"{self.name} proposes an investment opportunity quest."
+
+    def offer_customer_quest(self, player, game):
+        # Implement customer-specific quest logic here
+        return f"{self.name} requests a customer satisfaction quest."
+
+    def offer_competitor_quest(self, player, game):
+        # Implement competitor-specific quest logic here
+        return f"{self.name} challenges you to a competitive quest."
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, (0, 0, 255), self.rect)
+        font = pygame.font.Font(None, 20)
+        text = font.render(self.name, True, (255, 255, 255))
+        screen.blit(text, (self.rect.x, self.rect.y - 20))
